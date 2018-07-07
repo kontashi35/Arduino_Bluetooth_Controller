@@ -1,0 +1,55 @@
+#include <SoftwareSerial.h>         // Include the SoftwareSerial Library 
+
+SoftwareSerial mySerial(10, 11); 
+char data = 0;
+String string;
+boolean ledOn=false;
+void setup() {
+  mySerial.begin(9600);   //Sets the baud for serial data transmission                               
+    pinMode(13, OUTPUT); 
+}
+
+void loop() {
+  if (mySerial.available() > 0)
+  {
+  string = "";
+  }
+  while(mySerial.available() > 0)      // Send data only when you receive data:
+   {
+      data = mySerial.read();        //Read the incoming data & store into data
+      if(data == ':')
+      {
+        break;
+    }else{
+      string+= data;
+    }
+    delay(1);
+   }
+              
+      if(string == "TO")              // Checks whether value of data is equal to 1
+        ledon();
+        ledOn=true;
+       if(string == "TF")         //  Checks whether value of data is equal to 0
+       {
+        ledoff();
+         ledOn=false;
+       }
+       if ((string.toInt()>=0)&&(string.toInt()<=255))
+              {
+                  if (ledOn==true)
+                      {
+                      analogWrite(13, string.toInt());
+                      delay(10);
+                      }
+              }
+         
+   }
+   void ledon(){
+     analogWrite(13, 255);   //If value is 1 then LED turns ON
+     delay(10);
+   }
+   void ledoff(){
+     analogWrite(13, 0);  
+     delay(10);
+   }
+
